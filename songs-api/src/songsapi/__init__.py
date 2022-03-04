@@ -9,7 +9,7 @@ from .models import Song
 app = Flask(__name__)
 app.config["MONGO_URI"] = "mongodb://localhost:27017/yousician"
 pymongo = PyMongo(app)
-api = Api(app)
+api = Api(app, description='Songs Api')
 
 songs: Collection = pymongo.db.songs
 
@@ -23,6 +23,7 @@ class SongsList(Resource):
     @api.response(200, "Songs list")
     def get(self):
 
+        parser.add_argument("page", type=int, location="args")
         args = parser.parse_args()
         page = args.get("page", None)
         per_page = 3
