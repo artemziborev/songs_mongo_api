@@ -3,7 +3,7 @@
 from fastapi.encoders import jsonable_encoder
 
 from pydantic import BaseModel, Field
-from typing import Optional
+from typing import Optional, Dict
 from datetime import date
 
 from .objectid import PydanticObjectId
@@ -15,6 +15,7 @@ class Song(BaseModel):
     difficulty: float
     level:int
     released: date
+    rating: Optional[Dict]
 
     def to_json(self):
         return jsonable_encoder(self, exclude_none=True)
