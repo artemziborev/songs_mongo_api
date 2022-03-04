@@ -13,10 +13,13 @@ songs = db.songs
 
 def populate_db():
     with open(SONGS_DATA_FILE_PATH) as file:
+        id_counter = 0
         lines = file.readlines()
         for line in lines:
             data = json.loads(line.strip())
+            data["song_id"] = id_counter # we add this field for search by "song_id" field
             songs.insert_one(data)
+            id_counter +=1
 
 
 def create_indexes():

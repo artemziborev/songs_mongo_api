@@ -15,6 +15,7 @@ class Song(BaseModel):
     difficulty: float
     level:int
     released: date
+    song_id:int
     rating: Optional[Dict]
 
     def to_json(self):
