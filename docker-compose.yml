@@ -1,6 +1,17 @@
 version: "3.8"
 
 services:
+  songs_api:
+    build: .
+    volumes:
+      - .:/code
+    ports:
+      - "5000:5000"
+    environment:
+      - FLASK_APP=src/songsapi
+      - MONGO_DB_HOST=mongo
+      - MONGO_DB_DATABASE_NAME=yousician
+    command: flask run --host=0.0.0.0
   mongo:
     image: mongo
     container_name: songs_mongo_db

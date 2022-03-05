@@ -1,13 +1,16 @@
 from flask import Flask, request
+from werkzeug.exceptions import BadRequest
 from flask_restx import Api, Resource, fields
 from flask_restx import reqparse
 from flask_pymongo import PyMongo
 from pymongo.collection import Collection
 from .models import Song
+import os
 
-
+MONGO_DB_HOST = os.getenv('MONGO_DB_HOST')
+MONGO_DB_DATABASE_NAME = os.getenv('MONGO_DB_DATABASE_NAME')
 app = Flask(__name__)
-app.config["MONGO_URI"] = "mongodb://localhost:27017/yousician"
+app.config["MONGO_URI"] = f"mongodb://{MONGO_DB_HOST}:27017/{MONGO_DB_DATABASE_NAME}"
 pymongo = PyMongo(app)
 api = Api(app, description='Songs Api')
 
@@ -65,10 +68,14 @@ class SongsAverageDiffculty(Resource):
                     }
                 }
             ]
-        if result is not None and len(list(result)) > 0:
-            return [doc for doc in result]
+
+        result_list = [doc for doc in result]
+
+        if len(list(result_list)) == 0:
+            raise BadRequest("No songs with matching level found")
         else:
-            return {"message": "No songs with matching level found"}
+            return result_list
+
 
 
 @api.route("/search/<string:message>")
@@ -98,7 +105,7 @@ class AddSongRating(Resource):
         song = Song(**cursor).to_json()
         current_rating = song.get("rating", None)
         if int(data["rating"]) < 1 or int(data["rating"] > 5):
-            return {"message": "rating must be between 1 and 5"}
+            raise BadRequest("Rating must be between 1 and 5")
 
         if current_rating is None:
             songs.update_one(
