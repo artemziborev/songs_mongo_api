@@ -8,7 +8,6 @@ def client():
     return app.test_client()
 
 
-
 def test_songs_list_status_code(client):
     response = client.get("/songs/")
     assert response.status_code == 200
@@ -67,22 +66,21 @@ def test_search_logic(client):
     assert response.json[0]["title"] == expected
     songs.delete_one({"song_id": 100})
 
+
 def test_add_rating_status_code_and_response_type(client):
     data = {"song_id": 3, "rating": 5}
-    response = client.post("/add_rating/",
-                           data=json.dumps(data),
-                           content_type='application/json'
-                           )
+    response = client.post(
+        "/add_rating/", data=json.dumps(data), content_type="application/json"
+    )
     assert response.status_code == 200
-    assert response.content_type == 'application/json'
+    assert response.content_type == "application/json"
 
 
 def test_add_rating_wrong_rating_level(client):
     data = {"song_id": 3, "rating": 6}
-    response = client.post("/add_rating/",
-                           data=json.dumps(data),
-                           content_type='application/json'
-                           )
+    response = client.post(
+        "/add_rating/", data=json.dumps(data), content_type="application/json"
+    )
     message = {"message": "Rating must be between 1 and 5"}
     assert response.status_code == 400
     assert response.json == message
@@ -99,9 +97,8 @@ def test_add_rating_logic(client):
     }
     songs.insert_one(song_data)
     data = {"song_id": 1000, "rating": 5}
-    response = client.post("/add_rating/",
-                           data=json.dumps(data),
-                           content_type='application/json'
-                           )
-    assert response.json['rating'] == {"5": 1}
+    response = client.post(
+        "/add_rating/", data=json.dumps(data), content_type="application/json"
+    )
+    assert response.json["rating"] == {"5": 1}
     songs.delete_one({"song_id": 1000})

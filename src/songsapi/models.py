@@ -8,14 +8,15 @@ from datetime import date
 
 from .objectid import PydanticObjectId
 
+
 class Song(BaseModel):
     id: Optional[PydanticObjectId] = Field(None, alias="_id")
     artist: str
     title: str
     difficulty: float
-    level:int
+    level: int
     released: date
-    song_id:int
+    song_id: int
     rating: Optional[Dict]
 
     def to_json(self):
