@@ -1,4 +1,7 @@
-# yousician
+# Songs api using mongo + flask
+
+Simple API for storing songs information, searching, sorting.
+
 
 #To start project
 
